@@ -1,11 +1,12 @@
 package br.com.engenharia.software.projeto.aplicacao.patters.fornecedor.dominio;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 public class EntidadeDominio {
 
 	protected int id;
-	protected Date data;
+	protected LocalDate data;
 	
 	public EntidadeDominio() {
 		this.id += 1;
@@ -19,11 +20,11 @@ public class EntidadeDominio {
 		this.id = id;
 	}
 	
-	public Date getData() {
+	public LocalDate getData() {
 		return data;
 	}
 	
-	public void setData(Date data) {
+	public void setData(LocalDate data) {
 		this.data = data;
 	}
 }

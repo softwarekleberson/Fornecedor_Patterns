@@ -23,6 +23,7 @@ import br.com.engenharia.software.projeto.aplicacao.patters.fornecedor.negocio.i
 import br.com.engenharia.software.projeto.aplicacao.patters.fornecedor.negocio.implementacao.ValidaEndereco;
 import br.com.engenharia.software.projeto.aplicacao.patters.fornecedor.negocio.implementacao.ValidaExistencia;
 import br.com.engenharia.software.projeto.aplicacao.patters.fornecedor.negocio.implementacao.ValidaFornecedor;
+import br.com.engenharia.software.projeto.aplicacao.patters.fornecedor.negocio.implementacao.ValidaOs;
 import br.com.engenharia.software.projeto.aplicacao.patters.fornecedor.negocio.implementacao.ValidaPais;
 import br.com.engenharia.software.projeto.aplicacao.patters.fornecedor.negocio.implementacao.ValidaPessoa;
 import br.com.engenharia.software.projeto.aplicacao.patters.fornecedor.negocio.implementacao.ValidaProduto;
@@ -76,6 +77,7 @@ public class Fachada implements IFachada{
 		ValidaTipoTelefone vTipoTelefone = new ValidaTipoTelefone();
 		ValidaUf vUf = new ValidaUf();
 		ValidaUsuario vUsuario = new ValidaUsuario();
+		ValidaOs vOs = new ValidaOs();
 		
 		ArrayList<IStrategy>rnsEndereco = new ArrayList<IStrategy>();
 		rnsEndereco.add(vTipoEndereco);
@@ -87,17 +89,52 @@ public class Fachada implements IFachada{
 		
 		
 		ArrayList<IStrategy>rnsFornecedor = new ArrayList<IStrategy>();
-		//chamar todas as classes que tem relação com Fornecedor
+		rnsFornecedor.add(vFornecedor);
+		rnsFornecedor.add(vOs);
+		rnsFornecedor.add(vServico);
+		rnsFornecedor.add(vTipoEmpresa);
+		rnsFornecedor.add(vStatus);
+		rnsFornecedor.add(vProduto);
+		rnsFornecedor.add(vCnae);
+		rnsFornecedor.add(vTipoFornecimento);
 		
 		
 		ArrayList<IStrategy>rnsPessoa = new ArrayList<IStrategy>();
-		//chamar todas as classes que tem relação com Pessoa
+		rnsPessoa.add(vUsuario);
+		rnsPessoa.add(vPessoa);
+		rnsPessoa.add(vContato);
+		rnsPessoa.add(vDepartamento);
+		rnsPessoa.add(vTelefone);
+		rnsPessoa.add(vRamal);
+		rnsPessoa.add(vTipoTelefone);
+		
+		rns.put(nmPessoa, rnsPessoa);
+		rns.put(nmEndereco, rnsEndereco);
+		rns.put(nmFornecedor, rnsFornecedor);
 
 	}
 	
 	
 	public String salvar(EntidadeDominio entidadeDominio) {
-		// TODO Auto-generated method stub
+		StringBuilder sb = new StringBuilder();
+		String nmEntidade = entidadeDominio.getClass().getName();
+		List<IStrategy> regras = rns.get(nmEntidade);
+		
+		for (IStrategy s : regras) {
+			String msg = s.processar(entidadeDominio);
+			if(msg != null) {
+				sb.append(msg);
+				sb.append("\n");
+			}
+		}
+		
+		if(sb.length() == 0) {
+			IDAO dao = daos.get(nmEntidade);
+			dao.salvar(entidadeDominio);
+		}else {
+			return sb.toString();
+		}
+		
 		return null;
 	}
 

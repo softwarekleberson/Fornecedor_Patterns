@@ -1,12 +1,18 @@
 package br.com.engenharia.software.projeto.aplicacao.patters.fornecedor.negocio.implementacao;
 
+import java.time.LocalDate;
+
 import br.com.engenharia.software.projeto.aplicacao.patters.fornecedor.dominio.EntidadeDominio;
 import br.com.engenharia.software.projeto.aplicacao.patters.fornecedor.dominio.Fornecedor;
 
 public class ValidaFornecedor extends AbstractValidador {
 
 	public String processar(EntidadeDominio entidade) {
+				
 		Fornecedor fornecedor = (Fornecedor)entidade;
+		
+		LocalDate dia = LocalDate.now();
+		fornecedor.setDataCadastro(dia);
 		
 		if(isNull(fornecedor.getEmail())) {
 			sb.append("Invalido Email");
